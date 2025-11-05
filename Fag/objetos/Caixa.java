@@ -1,6 +1,6 @@
 package Fag.objetos;
 
-public class Caixa { // Nome do arquivo como na sua imagem
+public class Caixa {
 
 	private int valor;
 	private int quantidade;

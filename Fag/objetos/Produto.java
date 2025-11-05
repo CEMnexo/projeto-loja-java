@@ -1,7 +1,6 @@
 package Fag.objetos;
 
-public class Produto { // Mudou de 'livro' para 'Produto'
-
+public class Produto {
 	private String nome;
 	private double preco;
 	private int estoque;
@@ -20,7 +19,7 @@ public class Produto { // Mudou de 'livro' para 'Produto'
 	}
 	
 	public void setNome (String nome) {
-		if(nome != null && !nome.isBlank()) { // Validação (requisito)
+		if(nome != null && !nome.isBlank()) { 
 			this.nome = nome;
 		}
 	}
@@ -30,7 +29,7 @@ public class Produto { // Mudou de 'livro' para 'Produto'
 	}
 	
 	public void setPreco (double preco) {
-		if(preco > 0) { // Validação (requisito)
+		if(preco > 0) { 
 			this.preco = preco;
 		}	
 	}
@@ -40,7 +39,7 @@ public class Produto { // Mudou de 'livro' para 'Produto'
 	}
 	
 	public void setEstoque (int estoque) {
-		if(estoque >= 0) { // Validação (requisito)
+		if(estoque >= 0) {
 			this.estoque = estoque;
 		}
 	}
@@ -50,7 +49,7 @@ public class Produto { // Mudou de 'livro' para 'Produto'
 		System.out.printf("Nome: %s - Preço: R$%.2f - Estoque: %d\n", nome, preco, estoque);
 	}
 
-	@Override
+	
 	public String toString() {
 		return "Produto [nome=" + nome + ", preco=" + preco + ", estoque=" + estoque + "]";
 	}

@@ -1,11 +1,11 @@
-package Fag; // 'Fag' como no seu novo código
+package Fag;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import Fag.objetos.Produto; // Importando o objeto Produto
-import Fag.objetos.Caixa;   // Importando o objeto Caixa
+import Fag.objetos.Produto; 
+import Fag.objetos.Caixa;   
 
 public class PaginaUm {
 	static List<Produto> estoque = new ArrayList<>();
@@ -52,7 +52,7 @@ public class PaginaUm {
 			mostrarCaixa();
 			break;
 		case 0:
-			System.out.println("encerrando programa...╰(*°▽°*)╯");
+			System.out.println("encerrando programa...¯\_(ツ)_/¯");
 			break;	
 		default:
 			System.out.println("escolha uma opção válida!");
@@ -66,7 +66,6 @@ public class PaginaUm {
 		double saldoTotal = 0;
 		for (int i = 0; i < notasNoCaixa.size(); i++) {
 			notasNoCaixa.get(i).mostrarResumo();
-			// Calcula o saldo (valor da nota * quantidade)
 			saldoTotal = saldoTotal + (notasNoCaixa.get(i).getValor() * notasNoCaixa.get(i).getQuantidade());
 		} 
 		System.out.println("----------------------------");
@@ -74,7 +73,6 @@ public class PaginaUm {
 	}
 	
 	
-	// ##### MÉTODO MODIFICADO #####
 	public static void realizarVenda() {
 		
 		if(estoque.size() == 0) {
@@ -98,7 +96,6 @@ public class PaginaUm {
 		int quantidadeVenda = scan.nextInt();
 		scan.nextLine();
 		
-		// Validação de estoque
 		if(quantidadeVenda <= 0) {
 			System.out.println("Quantidade deve ser positiva!");
 			return;
@@ -111,13 +108,10 @@ public class PaginaUm {
 		double totalVenda = produtoVenda.getPreco() * quantidadeVenda;
 		System.out.printf("Total da Venda: R$ %.2f\n", totalVenda);
 		
-		// Lógica de pagamento e troco
 		System.out.println("Qual o valor pago pelo cliente?");
 		double valorPago = scan.nextDouble();
 		scan.nextLine();
 		
-		// --- LÓGICA DE TROCO ---
-		// Ignorando centavos, como falamos
 		int totalVendaInt = (int) totalVenda;
 		int valorPagoInt = (int) valorPago;
 		
@@ -129,24 +123,18 @@ public class PaginaUm {
 		int trocoNecessario = valorPagoInt - totalVendaInt;
 		
 		if (trocoNecessario == 0) {
-			// Venda sem troco, mais fácil
 			produtoVenda.setEstoque(produtoVenda.getEstoque() - quantidadeVenda);
 			System.out.println("Venda realizada com sucesso! (Sem troco). Estoque atualizado.");
-			// (Aqui poderíamos adicionar o dinheiro ao caixa, mas vamos focar no troco)
 		
 		} else {
-			// Venda COM troco
 			System.out.printf("Troco a ser dado: R$ %d\n", trocoNecessario);
 			
-			// Chama o novo método para TENTAR dar o troco
 			boolean sucessoTroco = darTroco(trocoNecessario);
 			
 			if (sucessoTroco) {
-				// Deu certo! O caixa já foi atualizado. Agora atualiza o estoque.
 				produtoVenda.setEstoque(produtoVenda.getEstoque() - quantidadeVenda);
 				System.out.println("Venda realizada com sucesso! Estoque e caixa atualizados.");
 			} else {
-				// Deu errado! O método darTroco já avisou o porquê.
 				System.out.println("Venda CANCELADA. O caixa não tem notas suficientes.");
 			}
 		}
@@ -172,7 +160,6 @@ public class PaginaUm {
 		System.out.println("informe o nome");
 		String nome = scan.nextLine();
 		
-		// Validação de nome duplicado (requisito)
 		for(int i = 0; i < estoque.size(); i++) {
 			if(estoque.get(i).getNome().equals(nome)) {
 				System.out.println("Erro: Já existe um produto com esse nome!");
@@ -194,8 +181,7 @@ public class PaginaUm {
 	}
 	
 	public static void inicializarCaixa() {
-		// Requisito: 5 de 50, 5 de 20, 5 de 10
-		// IMPORTANTE: Adicionar da nota MAIOR para a MENOR
+		
 		Caixa nota50 = new Caixa(50, 5);
 		Caixa nota20 = new Caixa(20, 5);
 		Caixa nota10 = new Caixa(10, 5);
@@ -205,42 +191,27 @@ public class PaginaUm {
 	}
 	
 	
-	// ##### NOVO MÉTODO #####
-	/**
-	 * Tenta calcular e subtrair o troco do caixa.
-	 * Retorna 'true' se conseguir, e 'false' se não tiver notas.
-	 */
+
 	public static boolean darTroco(int trocoPendente) {
-		// Este método é complexo. Ele primeiro "planeja" o troco.
-		// Se o plano der certo (trocoPendente chegar a 0),
-		// ele atualiza o caixa de verdade.
 		
-		int trocoOriginal = trocoPendente; // Salva para a mensagem final
+		int trocoOriginal = trocoPendente; 
 		
-		// Arrays "paralelos" para planejar o troco
-		// Isso é mais simples que criar objetos novos
 		int notasParaUsar_50 = 0;
 		int notasParaUsar_20 = 0;
 		int notasParaUsar_10 = 0;
 		
-		// Pega as referências dos objetos 'Caixa' na lista
-		// (Assume que a ordem é 50, 20, 10, como em 'inicializarCaixa')
 		Caixa objNota50 = notasNoCaixa.get(0);
 		Caixa objNota20 = notasNoCaixa.get(1);
 		Caixa objNota10 = notasNoCaixa.get(2);
 		
-		// --- FASE 1: Planejamento (sem alterar o caixa) ---
-		
-		// Tenta usar notas de 50
 		int notasNecessarias = trocoPendente / 50;
 		if (notasNecessarias > objNota50.getQuantidade()) {
-			notasParaUsar_50 = objNota50.getQuantidade(); // Usa todas que tem
+			notasParaUsar_50 = objNota50.getQuantidade();
 		} else {
-			notasParaUsar_50 = notasNecessarias; // Usa só as necessárias
+			notasParaUsar_50 = notasNecessarias; 
 		}
 		trocoPendente = trocoPendente - (notasParaUsar_50 * 50);
 		
-		// Tenta usar notas de 20
 		notasNecessarias = trocoPendente / 20;
 		if (notasNecessarias > objNota20.getQuantidade()) {
 			notasParaUsar_20 = objNota20.getQuantidade();
@@ -249,7 +220,7 @@ public class PaginaUm {
 		}
 		trocoPendente = trocoPendente - (notasParaUsar_20 * 20);
 		
-		// Tenta usar notas de 10
+		
 		notasNecessarias = trocoPendente / 10;
 		if (notasNecessarias > objNota10.getQuantidade()) {
 			notasParaUsar_10 = objNota10.getQuantidade();
@@ -259,11 +230,9 @@ public class PaginaUm {
 		trocoPendente = trocoPendente - (notasParaUsar_10 * 10);
 		
 		
-		// --- FASE 2: Veredito ---
 		
 		if (trocoPendente == 0) {
-			// SUCESSO! O plano funcionou.
-			// Agora, e somente agora, atualiza o caixa.
+
 			objNota50.setQuantidade( objNota50.getQuantidade() - notasParaUsar_50 );
 			objNota20.setQuantidade( objNota20.getQuantidade() - notasParaUsar_20 );
 			objNota10.setQuantidade( objNota10.getQuantidade() - notasParaUsar_10 );
@@ -273,15 +242,13 @@ public class PaginaUm {
 			if(notasParaUsar_20 > 0) { System.out.printf(" - %d nota(s) de R$20\n", notasParaUsar_20); }
 			if(notasParaUsar_10 > 0) { System.out.printf(" - %d nota(s) de R$10\n", notasParaUsar_10); }
 			
-			return true; // Retorna SUCESSO
+			return true;
 			
 		} else {
-			// FALHA! O plano não funcionou.
-			// Não faltam só R$10, faltam notas de R$10.
-			// (Ex: Troco de R$30, mas só tem 1 de R$20 e 0 de R$10. Faltam R$10)
+			
 			System.out.printf("Erro: Não foi possível dar o troco. Faltaram R$ %d.\n", trocoPendente);
 			System.out.println("O caixa não tem a combinação certa de notas.");
-			return false; // Retorna FALHA
+			return false;
 		}
 	}
 
